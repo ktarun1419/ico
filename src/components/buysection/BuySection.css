@@ -1,0 +1,212 @@
+.buy_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+.block_2_heading {
+  color: #fff;
+  font-family: Westgate;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.amount_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.amount_container div {
+  border-radius: 15px;
+  border: 2px solid #fff;
+  color: black;
+  text-align: left;
+  background: rgba(217, 217, 217, 0.5);
+  width: 40%;
+  font-size: 1.5rem;
+  padding: 8px;
+  box-sizing: border-box;
+}
+.input_container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.each_input {
+  width: 45%;
+  position: relative;
+  border-radius: 15px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+.each_input input {
+  background: transparent;
+  border: 0;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.5rem;
+  padding-right: 60px;
+  /* height: 30px; */
+}
+.currency {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  right: 0;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  font-size: 16px;
+  border-radius: 15px;
+  background: var(--1, linear-gradient(180deg, #1499f8 0%, #09bab9 100%));
+  box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25),
+    0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+
+  z-index: 10;
+}
+.buy_button {
+  width: 100%;
+  border-radius: 15px;
+  background: var(--1, linear-gradient(180deg, #1499f8 0%, #09bab9 100%));
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  padding: 8px;
+  color: white;
+  border: 0;
+  cursor: pointer;
+}
+.each_input input:focus {
+  outline: 0;
+}
+.progress {
+  width: 100%;
+}
+.barCompleted {
+  background: linear-gradient(90deg, #1499f8 0%, #09bab9 100%);
+}
+.block_1 {
+  width: 40%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  gap: 32px;
+}
+.block_2 {
+  padding: 32px;
+  width: 40%;
+  border-radius: 50px;
+  border: 1px solid #fff;
+  background: linear-gradient(
+    142deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(10px);
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 32px;
+}
+.block_2 div{
+    flex: 1;
+}
+.head_1 {
+  color: #fff;
+  font-family: Westgate;
+  font-size: 4rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.head_2 {
+  color: #fff;
+  font-family: Pridi;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 275;
+  line-height: normal;
+}
+.head_3 {
+  background: var(--1, linear-gradient(180deg, #1499f8 0%, #09bab9 100%));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 5rem;
+  font-style: normal;
+  font-weight: 700;
+  animation: pulsate 1.5s infinite;
+}
+.head_4 {
+  width: 100%;
+  border-radius: 15px;
+  background: linear-gradient(
+    92deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(10px);
+  font-size: 3rem;
+  font-style: normal;
+  font-weight: 700;
+}
+.head_5 {
+  color: #03fbfa;
+  text-align: center;
+  font-family: Westgate;
+  font-size: 4rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+@keyframes pulsate {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(1.5);
+  }
+  100% {
+    opacity: 0.8;
+    -webkit-transform: scale(1);
+  }
+}
+@media screen and (max-width: 900px){
+    .block_2{
+        width: 100%;
+        min-height: 200px;
+        padding: 16px;
+        gap: 32px;
+
+    }
+    .block_1{
+        width: 100%;
+    }
+    .head_1{
+        display: none;
+    }
+    .head_5{
+        display: none;
+    }
+    .buy_container{
+        padding-top: 100px;
+    }
+    
+}
