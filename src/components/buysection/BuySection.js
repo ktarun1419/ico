@@ -49,6 +49,13 @@ const BuySection = () => {
           });
         })
       }
+      else{
+        write({
+          args: [amt],
+          from: address,
+        });
+      
+      }
     }
   };
 
