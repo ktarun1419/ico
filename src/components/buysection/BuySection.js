@@ -1,60 +1,102 @@
 import React, { useEffect, useState } from "react";
 import "./BuySection.css";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { useContractRead, useAccount, useContractWrite } from "wagmi";
+// import { useContractRead, useAccount, useContractWrite } from "wagmi";
 import { BUSD, ICO } from "../../utils/address";
 import { icoABI, tokenABI } from "../../utils/ABI";
-import { Web3Button } from "@web3modal/react";
+import { useWeb3Onboard } from "@web3-onboard/react/dist/context";
+import Web3 from "web3";
+import { useConnectWallet } from "@web3-onboard/react";
+// import { Web3Button } from "@web3modal/react";
 const BuySection = () => {
   const [tokenSold, setTokenSold] = useState(23456);
   const [tokenLeft, setTokenLeft] = useState(234566);
   const [soldpercent, setSoldPercent] = useState(10);
   const [amount, setAmount] = useState();
-  const [tokens,setTokens]=useState()
-  const { isConnected, address } = useAccount();
-  let { data: price } = useContractRead({
-    address: ICO,
-    abi: icoABI,
-    functionName: "tokenPrice",
-  });
-  const { data: Transaction, write } = useContractWrite({
-    address: ICO,
-    abi: icoABI,
-    functionName: "depositAndReceiveToken",
-  });
-  const { data: ApproveAmount } = useContractRead({
-    address: BUSD,
-    abi: tokenABI,
-    functionName: "allowance",
-    args: [address, ICO],
-  });
-  const { data: Approved, writeAsync: ApproveContract  } = useContractWrite({
-    address: BUSD,
-    abi: tokenABI,
-    functionName: "approve",
-  });
-  const sendTransaction = () => {
-    console.log({ApproveAmount});
-    let amt = String(Number(amount) * 10 ** 9) + "000000000";
-   
-    if (isConnected) {
-      if (Number(ApproveAmount) / 10 ** 18 < amount) {
-        ApproveContract({
-          args: [ICO, amt],
-          from: address,
-        }).then((res) => {
-          write({
-            args: [amt],
-            from: address,
-          });
-        })
-      }
-      else{
-        write({
-          args: [amt],
-          from: address,
+  const [tokens, setTokens] = useState();
+  const [price, setPrice] = useState(4000);
+  const [{ wallet }] = useConnectWallet();
+  const [web3, setWeb3] = useState();
+  const [icoContract, setIcoContract] = useState();
+  const [busdContract, setBusdContract] = useState();
+  const [approveAmt, setApproveAmt] = useState();
+  const [userDetails,setUserDetails]=useState({
+    deposit_amount:0,
+    unique_id:null,
+    token_receive:0,
+  })
+  useEffect(() => {
+    if (wallet) {
+      console.log("callled");
+      let web_3 = new Web3(wallet?.provider);
+      setWeb3(web_3);
+      let ico = new web_3.eth.Contract(icoABI, ICO);
+      let busd = new web_3.eth.Contract(tokenABI, BUSD);
+      ico.methods
+        .tokenPrice()
+        .call()
+        .then((price) => {
+          setPrice(Number(price));
         });
+      busd.methods
+        .allowance(wallet.accounts[0]?.address, ICO)
+        .call()
+        .then((res) => {
+          setApproveAmt(Number(res));
+        });
+      setIcoContract(ico);
+      setBusdContract(busd);
+      getUserDetails()
+    }
+  }, [wallet]);
+  const getUserDetails=()=>{
+    if (wallet) {
+      icoContract.methods.getUserDetails().call().then((res)=>{
+        console.log('user',res);
+        let obj={
+          deposit_amount:res?.depositAmount,
+          unique_id:res?.uniqueId,
+          token_receive:res?.virtualNumber,
+        }
+        setUserDetails(obj)
+      })
+    }
+  }
+  const approve=async(amount)=>{
+  let tx={
+    from: wallet.accounts[0]?.address,
+    to:BUSD,
+    data:busdContract.methods.approve( wallet.accounts[0]?.address,amount).encodeABI()
+  }
+  web3.eth.sendTransaction(tx).then((res)=>{
+    return true
+  }).catch((e)=>{
+    console.log({e});
+  })
+  }
+  const deposit=(amount)=>{
+    let tx={
+      from: wallet.accounts[0]?.address,
+      to:ICO,
+      data:icoContract.methods.depositAndReceiveToken(amount).encodeABI()
+    }
+    web3.eth.sendTransaction(tx).then((res)=>{
+      return true
+    }).catch((e)=>{
+      console.log({e});
+    })
+  }
+  const sendTransaction =async () => {
+    if (wallet) {
+      let amt = String(Number(amount) * 10 ** 9) + "000000000";
       
+      if (approveAmt/10**18<amount) {
+        let approval=await approve(amt)
+        if (approval) {
+          deposit(amt)
+        }
+      }else{
+        deposit(amt)
       }
     }
   };
@@ -65,7 +107,7 @@ const BuySection = () => {
       return;
     }
     setAmount(value);
-    setTokens(value*10000/Number(price || 4000))
+    setTokens((value * 10000) / Number(price || 4000));
   };
 
   return (
@@ -112,12 +154,12 @@ const BuySection = () => {
             <input disabled value={tokens} />
           </div>
         </div>
-        {isConnected ? (
+        {true ? (
           <button className="buy_button" onClick={sendTransaction}>
             BUY NOW
           </button>
         ) : (
-          <Web3Button />
+          <></>
         )}
       </div>
     </div>
